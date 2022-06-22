@@ -81,6 +81,9 @@ exports.deleteSauce = (req ,res ) => {
   Sauce.findOne({ _id: req.params.id })
     // find sauce image to delete it
   .then(sauce => {
+    if (!sauce) {
+      return res.status(404).json({ message: "Sauce non trouvée !"});
+    }
     const filename = sauce.imageUrl.split('/images/')[1];// split URL to get filename
     fs.unlink(`images/${filename}`, () => {
       Sauce.deleteOne({ _id: req.params.id })
@@ -144,8 +147,8 @@ exports.noteSauce = (req, res, ) => {
     //add one Dislike and  push userId in usersLiked
     .then(() => res.status(200).json({ message: 'your rating was taken into account'}))
     .catch(error => {
-      const message = `Your rating couldn't be taken into account, please try again`
-      res.status(500).json({ message, data: error })
+      const message = `Your rating couldn't be taken into account, please try again`;
+      res.status(500).json({ message, data: error });
     })
   }
 };
