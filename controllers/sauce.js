@@ -4,6 +4,7 @@ const Sauce = require('../models/sauce');
  //ajout d'une sauce 
 exports.createSauce = (req ,res ) => {
   const sauceObject = JSON.parse(req.body.sauce);
+  delete sauceObject._id;
   const sauce = new Sauce({
     ...sauceObject,
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -11,12 +12,12 @@ exports.createSauce = (req ,res ) => {
   // save new sauce in database
   sauce.save()
     .then(sauce => {
-      const message = 'the sauce was added'
-      res.json({ message, data: sauce})
+      const message = 'the sauce was added';
+      res.json({ message, data: sauce});
     })
     .catch(error => {
-      const message = 'the sauce could not be added, please try again later' 
-      res.status(500).json({message, data:error })
+      const message = 'the sauce could not be added, please try again later' ;
+      res.status(500).json({message, data:error });
     });
   }
 
@@ -26,7 +27,7 @@ exports.getAllSauces = (req ,res ) => {
     .then(sauce => res.status(200).json(sauce))
     .catch(error => {
       const message = "could not find all sauces, please try again later"
-      res.status(500).json({message, data:error})
+      res.status(500).json({message, data:error});
       })
 };
 
@@ -35,8 +36,8 @@ exports.getOneSauce = (req ,res ) => {
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => res.status(200).json(sauce))
     .catch(error => {
-      const message = `this sauce could not be displayed, please try again`
-      res.status(500).json({ message, data: error })
+      const message = `this sauce could not be displayed, please try again`;
+      res.status(500).json({ message, data: error });
     })
 };
 
@@ -46,13 +47,16 @@ exports.modifySauce = (req, res, next) => {
       // if modifying image, delete old one
       Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
+           if (!sauce) {
+          return res.status(404).json({ message: "sauce not found !"});
+        }
           const filename = sauce.imageUrl.split('/images/')[1];
           fs.unlink(`images/${filename}`, () => {
             // add new image and update data
             const sauceObject = {
               ...JSON.parse(req.body.sauce),
               imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-              }
+              };
             Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
             .then(() => res.status(200).json({ message: 'Sauce was modified!' }))
             .catch(error => res.status(400).json({ error }));
@@ -62,11 +66,15 @@ exports.modifySauce = (req, res, next) => {
     } else {
         // no image modification
         const sauceObject = { ...req.body };
-        Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Sauce was modified!' }))
-          .catch(error => res.status(400).json({ error }));
+        Sauce
+        .updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+          
+        .then(() => res.status(200).json({ message: 'Sauce was modified!' }))
+          
+        .catch(error => res.status(400).json({ error }));
     }
 };
+
 
 //deletion of a sauce
 exports.deleteSauce = (req ,res ) => {

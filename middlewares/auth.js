@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require ('dotenv').config();
 
-hashkey=process.env.HASHKEY
+const hashkey=process.env.DBHASHKEY
 
 module.exports = (req, res, next) => {
   try {
