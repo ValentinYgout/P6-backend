@@ -14,12 +14,10 @@ exports.signup = (req, res, next) => {
         });
         user.save()
           .then(() => res.status(201).json({ message: 'User created' }))
-          .catch(error =>res.status(400).send(error.message))
+          .catch(error =>res.status(400).send(error.message));
       })
       .catch(error => res.status(500));
 };
-
-
 
 exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
