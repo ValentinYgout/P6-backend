@@ -15,8 +15,8 @@ mongoose.connect(`mongodb+srv://${process.env.DBUSER}:${process.env.DBPASSWORD}@
 	useNewUrlParser: true,
 	useUnifiedTopology: true
 })
-.then(() => console.log('Connexion à MongoDB réussie !'))
-.catch(() => console.log('Connexion à MongoDB échouée !'));
+.then(() => console.log('connected to mongoDB'))
+.catch(() => console.log('failed to connect to mongoDB'));
 
 // Apply the rate limiting middleware to all requests
 const rateLimit = require('express-rate-limit')
