@@ -29,7 +29,7 @@ app.use(rateLimit({
 
 // Apply helmet
 const helmet = require("helmet");
-app.use(helmet({crossOriginResourcePolicy: false}));
+app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
 
 // Cors
 app.use((req, res, next) => {

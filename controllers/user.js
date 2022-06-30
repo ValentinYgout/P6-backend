@@ -3,7 +3,7 @@ const User =require('../models/User')
 const jwt = require('jsonwebtoken');
 require ('dotenv').config();
 
-const hashkey=process.env.DBHASHKEY
+const hashkey=process.env.HASHKEY
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
