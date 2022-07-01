@@ -58,7 +58,13 @@ exports.updateSauce = (req, res, next) => {
                   };
                 Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
                 .then(() => {
-                  fs.unlink(`images/${filename}`);
+                  
+                  fs.unlink(`images/${filename}`, (err=>{
+                    if (err) console.log(err);
+                    else {
+                      console.log(`deleted images/${filename}`);
+                    }
+                  }));
                   res.status(200).json({ message: 'Sauce was modified!' });
                 })
                 .catch(error => res.status(400).json({ error }));
